@@ -59,6 +59,7 @@ export class LiteLlmHandler implements ApiHandler {
 		}
 		const modelId = this.options.liteLlmModelId || liteLlmDefaultModelId
 		const isOminiModel = modelId.includes("o1-mini") || modelId.includes("o3-mini")
+		const isClaudeModel = modelId.toLowerCase().includes("claude")
 
 		// Configuration for extended thinking
 		const budgetTokens = this.options.thinkingBudgetTokens || 0
@@ -69,6 +70,9 @@ export class LiteLlmHandler implements ApiHandler {
 
 		if (isOminiModel && reasoningOn) {
 			temperature = undefined // Thinking mode doesn't support temperature
+		}
+		if (isClaudeModel && reasoningOn) {
+			temperature = 1 // temperature may only be set to 1 when thinking is enabled
 		}
 
 		// Define cache control object if prompt caching is enabled
